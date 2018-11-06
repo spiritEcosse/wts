@@ -1,11 +1,12 @@
 from io import StringIO
 from functools import reduce
+from collections import OrderedDict
 
 
 class TAG:
     """Generic class for tags"""
 
-    def __init__(self, inner_HTML="", **attrs):
+    def __init__(self, attrs=OrderedDict(), inner_HTML=""):
         self.tag = self.__class__.__name__
         self.inner_HTML = inner_HTML
         self.attrs = attrs
@@ -82,7 +83,7 @@ class TAG:
 
 # list of tags, from the HTML 4.01 specification
 
-CLOSING_TAGS = ['A', 'ABBR', 'ACRONYM', 'ADDRESS', 'APPLET',
+CLOSING_TAGS = ['a', 'ABBR', 'ACRONYM', 'ADDRESS', 'APPLET',
                 'B', 'BDO', 'BIG', 'BLOCKQUOTE', 'BUTTON',
                 'CAPTION', 'CENTER', 'CITE', 'CODE',
                 'DEL', 'DFN', 'DIR', 'DIV', 'DL',
@@ -91,7 +92,7 @@ CLOSING_TAGS = ['A', 'ABBR', 'ACRONYM', 'ADDRESS', 'APPLET',
                 'I', 'IFRAME', 'INS', 'KBD', 'LABEL', 'LEGEND',
                 'MAP', 'MENU', 'NOFRAMES', 'NOSCRIPT', 'OBJECT',
                 'OL', 'OPTGROUP', 'PRE', 'Q', 'S', 'SAMP',
-                'SCRIPT', 'SELECT', 'SMALL', 'SPAN', 'STRIKE',
+                'SCRIPT', 'SELECT', 'SMALL', 'span', 'STRIKE',
                 'STRONG', 'STYLE', 'SUB', 'SUP', 'TABLE',
                 'TEXTAREA', 'TITLE', 'TT', 'U', 'UL',
                 'VAR', 'BODY', 'COLGROUP', 'DD', 'DT', 'HEAD',

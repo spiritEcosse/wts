@@ -1,0 +1,24 @@
+{
+  "name": "wts",
+  "version": "1.0.0",
+  "description": "**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "bootstrap": "^4.1.3",
+    "config": "^2.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/spiritEcosse/wts.git"
+  },
+  "author": "igor",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/spiritEcosse/wts#readme"
+}

@@ -1,3 +1,8 @@
+Замена труда человека, посредством автоматизации рутинной, монотонной работы.
+Автоматизация верстки, а именно внесение в html template необходимого тега, который, в связи с css, отвечает за внешнее представление.
+Автоматизация заполнения html, подключение css files.
+
+
 **Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
 
 When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
