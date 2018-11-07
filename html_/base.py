@@ -1,6 +1,13 @@
-from io import StringIO
-from functools import reduce
+"""
+head = HEAD(TITLE('Test document'))
+body = BODY()
+body <= H1('This is a test document')
+body <= 'First line' + BR() + 'Second line'
+print(HTML(head + body))
+"""
 from collections import OrderedDict
+from functools import reduce
+from io import StringIO
 
 
 class TAG:
@@ -83,6 +90,7 @@ class TAG:
 
 # list of tags, from the HTML 4.01 specification
 
+
 CLOSING_TAGS = ['a', 'ABBR', 'ACRONYM', 'ADDRESS', 'APPLET',
                 'B', 'BDO', 'BIG', 'BLOCKQUOTE', 'BUTTON',
                 'CAPTION', 'CENTER', 'CITE', 'CODE',
@@ -91,13 +99,13 @@ CLOSING_TAGS = ['a', 'ABBR', 'ACRONYM', 'ADDRESS', 'APPLET',
                 'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
                 'I', 'IFRAME', 'INS', 'KBD', 'LABEL', 'LEGEND',
                 'MAP', 'MENU', 'NOFRAMES', 'NOSCRIPT', 'OBJECT',
-                'OL', 'OPTGROUP', 'PRE', 'Q', 'S', 'SAMP',
+                'ol', 'OPTGROUP', 'PRE', 'Q', 'S', 'SAMP',
                 'SCRIPT', 'SELECT', 'SMALL', 'span', 'STRIKE',
                 'STRONG', 'STYLE', 'SUB', 'SUP', 'TABLE',
                 'TEXTAREA', 'TITLE', 'TT', 'U', 'UL',
                 'VAR', 'BODY', 'COLGROUP', 'DD', 'DT', 'HEAD',
-                'HTML', 'LI', 'P', 'TBODY', 'OPTION',
-                'TD', 'TFOOT', 'TH', 'THEAD', 'TR']
+                'HTML', 'li', 'P', 'TBODY', 'OPTION',
+                'TD', 'TFOOT', 'TH', 'THEAD', 'TR', 'nav']
 
 NON_CLOSING_TAGS = ['AREA', 'BASE', 'BASEFONT', 'BR', 'COL', 'FRAME',
                     'HR', 'IMG', 'INPUT', 'ISINDEX', 'LINK',
@@ -117,6 +125,7 @@ def Sum(iterable):
     else:
         return ''
 
+
 # whitespace-insensitive tags, determines pretty-print rendering
 LINE_BREAK_AFTER = NON_CLOSING_TAGS + ['HTML', 'HEAD', 'BODY',
                                        'FRAMESET', 'FRAME',
@@ -132,10 +141,3 @@ ONE_LINE = ['HTML', 'HEAD', 'BODY',
             'TABLE', 'TR', 'TD', 'TH', 'SELECT', 'OPTION',
             'FORM',
             ]
-
-if __name__ == '__main__':
-    head = HEAD(TITLE('Test document'))
-    body = BODY()
-    body <= H1('This is a test document')
-    body <= 'First line' + BR() + 'Second line'
-    print(HTML(head + body))

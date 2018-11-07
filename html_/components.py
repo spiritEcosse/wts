@@ -1,18 +1,50 @@
-from html.base import *
 from collections import OrderedDict
 
+from bs4 import BeautifulSoup
+
+from html_.base import *
+
+
 class Components:
+    def make_alert(self):
+        pass
+
     @classmethod
     def make_badge(cls, attr=(), text=''):
         attr = OrderedDict(attr)
         attr['class'] = 'badge ' + attr.get('class', 'badge-primary')
         return str(a(attr, text)) if attr.get('href', '') else str(span(attr, text))
 
-    def make_alert(self):
-        pass
+    @classmethod
+    def make_breadcrumb(cls, items=(), attr=()):
+        attr = OrderedDict(attr)
+        attr['aria-label'] = "breadcrumb"
+        html = nav(attr)
+        html_ol = ol(OrderedDict((('class', 'breadcrumb'), )))
 
-    def make_breadcrumb(self):
-        pass
+        for item in items[:-1]:
+            attr_li = OrderedDict(
+                (
+                    ('class', 'breadcrumb-item'),
+                )
+            )
+            attr_a = OrderedDict(
+                (
+                    ('href', '#'),
+                )
+            )
+
+            html_ol <= li(attr_li) <= a(attr_a, item)
+
+        attr_li = OrderedDict(
+            (
+                ('class', 'breadcrumb-item active'),
+                ('aria-current', 'page'),
+            )
+        )
+        html_ol <= li(attr_li, items[-1] if items else '')
+        html <= html_ol
+        return BeautifulSoup(str(html), "html.parser").prettify()
 
     def make_button(self):
         pass
