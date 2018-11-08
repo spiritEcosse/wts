@@ -1,0 +1,92 @@
+{
+  "components": {
+    "cards": {
+      "tags": ["div"],
+      "classes": ["card"],
+      "extra_classes": ["text-*", "w-*", "mb-*"],
+      "types": {
+        "header": {
+          "tags": ["div"],
+          "classes": ["card-header"],
+          "single": false
+        },
+        "images":{
+          "tags": ["img"],
+          "classes": ["card-img-top"],
+          "single": false
+        },
+        "body": {
+          "tags": ["div"],
+          "classes": ["card-body"],
+          "single": true,
+          "contents": [{
+              "tags": ["h*"],
+              "classes": ["card-title"],
+              "sibling": {
+                "tags": ["h*"],
+                "classes": ["card-subtitle"],
+                "extra_classes": ["mb-*", "text-muted"],
+              },
+            },
+            {
+              "tags": ["p"],
+              "classes": ["card-text"],
+            },
+            {
+              "tags": ["a"],
+              "classes": ["card-link"],
+            },
+          ],
+        },
+        "list_group": {
+          "single": true,
+          "tags": ["ul"],
+          "classes": ["list-group", "list-group-flush"],
+          "contents": [
+            {
+              "tags": ["li"],
+              "classes": ["list-group-item"],
+            },
+          ]
+        },
+        "footer": {
+          "tags": ["div"],
+          "classes": ["card-footer"],
+          "single": false,
+        },
+        "navigation": {
+          "single": false,
+          "parent": "header",
+          "extends": ["nav.types.tabs", "nav.types.pills"],
+          "classes": ["card-header-%k"]
+        },
+      }
+    },
+    "nav": {
+      "tags": ["ul"],
+      "classes": ["nav"],
+      "types": {
+        "tabs": {
+          "extends": "nav",
+          "classes": ["nav-%k"],
+          "contents": [
+            {
+              "tags": ["li"],
+              "classes": ["nav-item"],
+              "contents": [
+                {
+                  "tags": ["a"],
+                  "classes": ["nav-link"],
+                  "extra_classes": ["active", "disabled"],
+                }
+              ]
+            },
+          ]
+        },
+        "pills": {
+          "duplicate": "tabs",
+        }
+      }
+    }
+  }
+}

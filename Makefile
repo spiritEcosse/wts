@@ -1,6 +1,6 @@
-test_it_verbose:
+test_verbose:
 	python -m pytest tests/ -vv
 
-test_it:
+test:
 	python -m pytest tests/
 	# PYTHONPATH=. py.test

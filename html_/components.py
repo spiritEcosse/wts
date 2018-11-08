@@ -1,3 +1,4 @@
+import sys
 from collections import OrderedDict
 
 from bs4 import BeautifulSoup
@@ -16,16 +17,17 @@ class Components:
         return str(a(attr, text)) if attr.get('href', '') else str(span(attr, text))
 
     @classmethod
-    def make_breadcrumb(cls, items=(), attr=()):
+    def breadcrumb(cls, items=(), attr=(), **kwargs):
+        name = kwargs['name']
         attr = OrderedDict(attr)
-        attr['aria-label'] = "breadcrumb"
+        attr['aria-label'] = name
         html = nav(attr)
-        html_ol = ol(OrderedDict((('class', 'breadcrumb'), )))
+        html_ol = ol(OrderedDict((('class', name), )))
 
         for item in items[:-1]:
             attr_li = OrderedDict(
                 (
-                    ('class', 'breadcrumb-item'),
+                    ('class', name + '-item'),
                 )
             )
             attr_a = OrderedDict(
@@ -38,7 +40,7 @@ class Components:
 
         attr_li = OrderedDict(
             (
-                ('class', 'breadcrumb-item active'),
+                ('class', name + '-item active'),
                 ('aria-current', 'page'),
             )
         )

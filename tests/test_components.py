@@ -59,8 +59,8 @@ class TestComponenets:
             </nav>""", "html.parser")
          ),
     ))
-    def test_make_breadcrumb(self, input, output):
-        assert Components.make_breadcrumb(*input) == output.prettify()
+    def test_breadcrumb(self, input, output):
+        assert Components.breadcrumb(*input) == output.prettify()
 
     # def test_make_button(self):
     #     pass
