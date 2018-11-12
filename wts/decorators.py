@@ -13,12 +13,3 @@ def check_base(tags, class_):
             return all((soup.contents[0].name in tags, class_ in html))
         return func
     return decorator
-
-
-def func_name():
-    def decorator(func):
-        kwargs = {}
-        kwargs['name'] = func.__name__
-
-        @wraps(func)
-        def func(*args, **kwargs):

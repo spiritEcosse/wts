@@ -24,8 +24,7 @@
               "classes": ["card-title"],
               "sibling": {
                 "tags": ["h*"],
-                "classes": ["card-subtitle"],
-                "extra_classes": ["mb-*", "text-muted"],
+                "classes": ["card-subtitle", "mb-*", "text-muted"],?
               },
             },
             {

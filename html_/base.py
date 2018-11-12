@@ -1,9 +1,10 @@
 """
-head = HEAD(TITLE('Test document'))
+head = HEAD(TITLE('Test document')).
+
 body = BODY()
 body <= H1('This is a test document')
 body <= 'First line' + BR() + 'Second line'
-print(HTML(head + body))
+print(HTML(head + body)).
 """
 from collections import OrderedDict
 from functools import reduce
@@ -11,7 +12,7 @@ from io import StringIO
 
 
 class TAG:
-    """Generic class for tags"""
+    """Generic class for tags."""
 
     def __init__(self, attrs=OrderedDict(), inner_HTML=""):
         self.tag = self.__class__.__name__
@@ -50,7 +51,7 @@ class TAG:
         return res.getvalue()
 
     def __le__(self, other):
-        """Add a child"""
+        """Add a child."""
         if isinstance(other, str):
             other = TEXT(other)
         self.children.append(other)
@@ -58,7 +59,7 @@ class TAG:
         return self
 
     def __add__(self, other):
-        """Return a new instance : concatenation of self and another tag"""
+        """Return a new instance : concatenation of self and another tag."""
         res = TAG()
         res.tag = self.tag
         res.inner_HTML = self.inner_HTML
@@ -68,14 +69,14 @@ class TAG:
         return res
 
     def __radd__(self, other):
-        """Used to add a tag to a string"""
+        """Use to add a tag to a string."""
         if isinstance(other, str):
             return TEXT(other) + self
         else:
             raise ValueError
 
     def __mul__(self, n):
-        """Replicate self n times, with tag first : TAG * n"""
+        """Replicate self n times, with tag first : TAG * n."""
         res = TAG()
         res.tag = self.tag
         res.inner_HTML = self.inner_HTML
@@ -85,7 +86,7 @@ class TAG:
         return res
 
     def __rmul__(self, n):
-        """Replicate self n times, with n first : n * TAG"""
+        """Replicate self n times, with n first : n * TAG."""
         return self * n
 
 # list of tags, from the HTML 4.01 specification
@@ -117,8 +118,11 @@ for tag in CLOSING_TAGS + NON_CLOSING_TAGS + ['TEXT']:
 
 
 def Sum(iterable):
-    """Return the concatenation of the instances in the iterable
-    Can't use the built-in sum() on non-integers"""
+    """
+    Return the concatenation of the instances in the iterable.
+
+    Can't use the built-in sum() on non-integers.
+    """
     it = [item for item in iterable]
     if it:
         return reduce(lambda x, y: x + y, it)
@@ -127,13 +131,14 @@ def Sum(iterable):
 
 
 # whitespace-insensitive tags, determines pretty-print rendering
-LINE_BREAK_AFTER = NON_CLOSING_TAGS + ['HTML', 'HEAD', 'BODY',
-                                       'FRAMESET', 'FRAME',
-                                       'TITLE', 'SCRIPT',
-                                       'TABLE', 'TR', 'TD', 'TH', 'SELECT', 'OPTION',
-                                       'FORM',
-                                       'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
-                                       ]
+LINE_BREAK_AFTER = NON_CLOSING_TAGS + \
+    ['HTML', 'HEAD', 'BODY',
+     'FRAMESET', 'FRAME',
+     'TITLE', 'SCRIPT',
+     'TABLE', 'TR', 'TD', 'TH', 'SELECT', 'OPTION',
+     'FORM',
+     'H1', 'H2', 'H3', 'H4', 'H5', 'H6',
+     ]
 # tags whose opening tag should be alone in its line
 ONE_LINE = ['HTML', 'HEAD', 'BODY',
             'FRAMESET'

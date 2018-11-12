@@ -1,3 +1,4 @@
+
 from wts import settings
 from wts.decorators import check_base
 
