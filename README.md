@@ -114,6 +114,43 @@ Automate filling html connection css files. -->
   }
 }
 
+"""
+card
+  card-header str "Header"
+  card-body
+    blockquote
+      p str "Content"
+      blockquote-footer
+        cite str "Content"
+"""
+
+"card, blockquote-footer, "
+
+"""
+card
+  card-header
+    nav-tabs class "card-header-tabs"
+      nav-item
+        nav-link class "active" str "Link" attrs "href: #"
+      nav-item
+        nav-link str "Link" attrs "href: #"
+      nav-item
+        nav-link str "Link" attrs "href: #"
+      nav-item
+        nav-link class "disabled" str "Link" attrs "href: #"
+"""
+
+"card, header, tabs"
+
+"""
+card class "text-white bg-primary mb-3"
+  header str "Header"
+  body
+    title str "Title"
+    text str "Text"
+"""
+
+"card, header, body, title, text"
 
 """
 card-group
@@ -124,3 +161,10 @@ card-group
         blockquote-footer
           cite str "Content"
 """
+
+css: display: table; border-bottom: 0.07rem dashed #ebedf2;
+img, Python </br> A Programming Language, $12
+
+
+css:
+Trends
