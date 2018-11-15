@@ -8,10 +8,11 @@ class TestAnalyze:
     """Test analyze html structure."""
 
     @pytest.mark.parametrize("input,expected", (
-        (1024, True),
-        (700, False),
+        ("block", False),
+        ("inline", True),
+        ("inline-block", True),
     ))
-    def test_is_component(self, input, expected):
+    def test_append(self, input, expected):
         """Test find target component."""
-        analyze = Analyze()
-        assert analyze.is_component(input) == expected
+        analyze = Analyze(input)
+        assert analyze.append() == expected

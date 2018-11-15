@@ -1,0 +1,46 @@
+version:                 '2'
+
+services:
+  web:
+    build:               .
+    volumes:
+      - ~/.ipython:/root/.ipython
+      - .:/app
+    command:             celery -A wts flower --port=80
+    ports:
+      - "8090:80"
+    depends_on:
+      - worker
+
+  worker:
+    build:               .
+    command:             celery -A wts worker -l info
+    volumes:
+      - ~/.ipython:/root/.ipython
+      - .:/app
+    depends_on:
+      - db
+      - rabbit
+
+  db:
+    image:               postgres
+    environment:
+      POSTGRES_PASSWORD: "wts"
+      POSTGRES_USER:     "wts"
+      POSTGRES_DB:       "wts"
+      PGDATA:            "/var/lib/postgresql/data/db/"
+      TZ:                "Europe/Kiev"
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  rabbit:
+    image:               rabbitmq:management
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - TZ=Europe/Kiev
+    ports:
+      - "4:15672"
+
+volumes:
+  db:

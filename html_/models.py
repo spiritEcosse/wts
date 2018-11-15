@@ -96,7 +96,7 @@ class Component(Base):
 #     classes = Column(ARRAY(String))
 #     components = relationship(
 #         'Component', secondary=utilities_components,
-        # back_populates='utilities'
+    # back_populates='utilities'
 #     )
 #
 #     def __repr__(self):

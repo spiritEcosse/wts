@@ -4,10 +4,24 @@
 class Analyze:
     """Analyze html structure."""
 
-    def __init__(self, windows_width=1024):
-        """Init ."""
-        self.full_width = windows_width
+    CSS_DISPLAYS = (
+        'block',
+        'inline',
+        'inline-block',
+    )
 
-    def is_component(self, width):
+    def __init__(self, css_display, windows_width=1904):
+        """Init ."""
+        self.css_display = css_display
+        self.windows_width = windows_width
+
+    def append(self):
         """Find target component."""
-        return self.full_width == width
+        append = False
+
+        if self.css_display == self.CSS_DISPLAYS[0]:
+            append = False
+        elif self.css_display in self.CSS_DISPLAYS[1:]:
+            append = True
+
+        return append

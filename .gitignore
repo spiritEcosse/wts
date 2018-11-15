@@ -1,8 +1,6 @@
 *.pyc
 .idea/
 .pytest_cache/
-*.css
-*.html
 *.log
 node_modules/
 .ropeproject/

@@ -9,7 +9,9 @@
 #     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'wts'
+PROJECT = 'wts'
+
+BOT_NAME = PROJECT
 
 SPIDER_MODULES = ['wts.spiders']
 NEWSPIDER_MODULE = 'wts.spiders'
@@ -89,38 +91,9 @@ ROBOTSTXT_OBEY = True
 # HTTPCACHE_IGNORE_HTTP_CODES = []
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
-
-INLINE_ELEMENTS = (
-    'a',
-    'abbr',
-    'acronym',
-    'b',
-    'bdo',
-    'big',
-    'br',
-    'button',
-    'cite',
-    'code',
-    'dfn',
-    'em',
-    'i',
-    'img',
-    'input',
-    'kbd',
-    'label',
-    'map',
-    'object',
-    'q',
-    'samp',
-    'script',
-    'select',
-    'small',
-    'span',
-    'strong',
-    'sub',
-    'sup',
-    'textarea',
-    'time',
-    'tt',
-    'var',
-)
+CELERY_BROKER_URL = 'amqp://admin:admin@rabbit/'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'rpc://'
+CELERY_TIMEZONE = 'Europe/Kiev'

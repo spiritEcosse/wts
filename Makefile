@@ -1,6 +1,11 @@
-test_verbose:
-	python -m pytest tests/ -vv
+deploy:
+	docker-compose up --build
 
-test:
-	python -m pytest tests/
-	# PYTHONPATH=. py.test
+deploy_hard:
+	docker-compose stop && docker-compose rm -f && docker-compose up --build
+
+ipython_web:
+	docker-compose exec web ipython
+
+bash_web:
+	docker-compose exec web bash

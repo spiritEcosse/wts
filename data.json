@@ -10,7 +10,7 @@
           "classes": ["card-header"],
           "single": false
         },
-        "images":{
+        "images": {
           "tags": ["img"],
           "classes": ["card-img-top"],
           "single": false
@@ -24,7 +24,8 @@
               "classes": ["card-title"],
               "sibling": {
                 "tags": ["h*"],
-                "classes": ["card-subtitle", "mb-*", "text-muted"],?
+                "classes": ["card-subtitle", "mb-*", "text-muted"],
+                ?
               },
             },
             {
@@ -41,12 +42,10 @@
           "single": true,
           "tags": ["ul"],
           "classes": ["list-group", "list-group-flush"],
-          "contents": [
-            {
-              "tags": ["li"],
-              "classes": ["list-group-item"],
-            },
-          ]
+          "contents": [{
+            "tags": ["li"],
+            "classes": ["list-group-item"],
+          }, ]
         },
         "footer": {
           "tags": ["div"],
@@ -68,19 +67,15 @@
         "tabs": {
           "extends": "nav",
           "classes": ["nav-%k"],
-          "contents": [
-            {
-              "tags": ["li"],
-              "classes": ["nav-item"],
-              "contents": [
-                {
-                  "tags": ["a"],
-                  "classes": ["nav-link"],
-                  "extra_classes": ["active", "disabled"],
-                }
-              ]
-            },
-          ]
+          "contents": [{
+            "tags": ["li"],
+            "classes": ["nav-item"],
+            "contents": [{
+              "tags": ["a"],
+              "classes": ["nav-link"],
+              "extra_classes": ["active", "disabled"],
+            }]
+          }, ]
         },
         "pills": {
           "duplicate": "tabs",
