@@ -1,7 +1,7 @@
 """Test analyze html structure."""
 
 import pytest
-from html_.analyze import Analyze
+from apps.html.analyze import Analyze
 
 
 class TestAnalyze:

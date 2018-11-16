@@ -1,27 +1,25 @@
 """Analyze html structure."""
 
+from apps.css.models import Value
+
 
 class Analyze:
     """Analyze html structure."""
 
-    CSS_DISPLAYS = (
-        'block',
-        'inline',
-        'inline-block',
-    )
+    DISPLAYS = Value.pd_name_by_pr('display')
 
-    def __init__(self, css_display, windows_width=1904):
+    def __init__(self, display, windows_width=1904):
         """Init ."""
-        self.css_display = css_display
+        self.display = display
         self.windows_width = windows_width
 
     def append(self):
         """Find target component."""
         append = False
 
-        if self.css_display == self.CSS_DISPLAYS[0]:
+        if self.display == self.DISPLAYS[0]:
             append = False
-        elif self.css_display in self.CSS_DISPLAYS[1:]:
+        elif self.display in list(self.DISPLAYS[1:]):
             append = True
 
         return append

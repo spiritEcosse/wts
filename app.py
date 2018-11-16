@@ -1,27 +1,44 @@
+"""
+Flask app.
+
+Import all models.
+"""
+
 import importlib
 import os
 
 from flask import Flask
 
+from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
+
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
-
-MODELS_DIRECTORY = "apps"
-EXCLUDE_FILES = ["__init__.py"]
+APPS_FOLDER = 'apps'
+FILE_MODELS = 'models.py'
 
 
 def import_models():
-    for dir_path, dir_names, file_names in os.walk(MODELS_DIRECTORY):
-        for file_name in file_names:
-            if file_name.endswith("py") and not file_name in EXCLUDE_FILES:
-                file_path_wo_ext, _ = os.path.splitext(
-                    (os.path.join(dir_path, file_name)))
-                module_name = file_path_wo_ext.replace(os.sep, ".")
-                importlib.import_module(module_name)
+    """
+    Import crutch for models.
+
+    Recursively import all models.py from apps.
+    """
+    def replace(path): return path.replace(os.sep, '.')
+
+    def split(path): return replace(os.path.splitext(path)[0])
+
+    def join(di, file_): return split(os.path.join(di, file_))
+
+    def imm(di, file_): return importlib.import_module(join(di, file_))
+
+    [imm(di, file_) for di, dirs, files in os.walk(APPS_FOLDER)
+     for file_ in files if file_ == FILE_MODELS]
 
 
 import_models()

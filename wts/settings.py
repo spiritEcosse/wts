@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
+"""
+Settings for project.
 
-# Scrapy settings for wts project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     https://doc.scrapy.org/en/latest/topics/settings.html
-#     https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-#     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+All settings for all services.
+
+Scrapy settings for wts project.
+
+For simplicity, this file contains only settings considered important or
+commonly used. You can find more settings consulting the documentation:
+
+    https://doc.scrapy.org/en/latest/topics/settings.html
+    https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
+    https://doc.scrapy.org/en/latest/topics/spider-middleware.html
+"""
 
 PROJECT = 'wts'
 
@@ -17,8 +22,8 @@ SPIDER_MODULES = ['wts.spiders']
 NEWSPIDER_MODULE = 'wts.spiders'
 
 
-# Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = 'wts (+http://www.yourdomain.com)'
+# Crawl responsibly by identifying yourself (and your website) on the
+# user-agent USER_AGENT = 'wts (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -42,7 +47,8 @@ ROBOTSTXT_OBEY = True
 
 # Override the default request headers:
 # DEFAULT_REQUEST_HEADERS = {
-#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+#   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;
+#       q=0.8',
 #   'Accept-Language': 'en',
 # }
 
@@ -84,7 +90,8 @@ ROBOTSTXT_OBEY = True
 # AUTOTHROTTLE_DEBUG = False
 
 # Enable and configure HTTP caching (disabled by default)
-# See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
+# See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
+# httpcache-middleware-settings
 # HTTPCACHE_ENABLED = True
 # HTTPCACHE_EXPIRATION_SECS = 0
 # HTTPCACHE_DIR = 'httpcache'
