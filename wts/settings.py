@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+import os
+
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 """
 Settings for project.
 
@@ -14,14 +18,19 @@ commonly used. You can find more settings consulting the documentation:
     https://doc.scrapy.org/en/latest/topics/spider-middleware.html
 """
 
-PROJECT = 'wts'
+PROJECT_SETTINGS = os.path.dirname(os.path.abspath(__file__))
+PROJECT = PROJECT_SETTINGS.split(os.sep)[-1]
 
 BOT_NAME = PROJECT
+BASE_DIR = os.path.dirname(PROJECT_SETTINGS)
 
 SPIDER_MODULES = ['wts.spiders']
 NEWSPIDER_MODULE = 'wts.spiders'
 
+APPS_FOLDER = 'apps'
+FILE_MODELS = 'models.py'
 
+WINDOWS_WIDTH = 1904
 # Crawl responsibly by identifying yourself (and your website) on the
 # user-agent USER_AGENT = 'wts (+http://www.yourdomain.com)'
 
@@ -104,3 +113,6 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_RESULT_BACKEND = 'rpc://'
 CELERY_TIMEZONE = 'Europe/Kiev'
+
+REMOTE_DRIVER = 'http://hub:4444/wd/hub'
+CAPABILITIES = DesiredCapabilities.PHANTOMJS

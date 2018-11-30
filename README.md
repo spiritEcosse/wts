@@ -3,6 +3,14 @@ Automation of layout, namely the introduction of the necessary tag in the html t
 which, in connection with css, is responsible for the external presentation.
 Automate filling html connection css files. -->
 
+1. Rewrite makeup examples components only with bootstrap classes with same styles.
+2. Added needed custom classes based on current css styles.
+3. Make similar components not identical examples by css and html.
+4. Assemble the components into a beautiful, logical, complete web template.
+
+wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --domains demo.themekita.com --no-parent http://demo.themekita.com/demo-millenium/millenium/examples/demo2/
+
+
 "card": {
   "card-body": "Text"
 }

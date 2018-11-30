@@ -5,9 +5,10 @@ from sqlalchemy.sql import expression
 
 import pandas as pd
 from app import db
+from wts.db import ModelMixin
 
 
-class Property(db.Model):
+class Property(ModelMixin, db.Model):
     """
     Css layout.
 
@@ -17,14 +18,10 @@ class Property(db.Model):
     __tablename__ = 'property'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String, unique=True)
-
-    def __repr__(self):
-        """View object class."""
-        return "<{}(name='{}')>".format(self.__class__.__name__, self.name)
+    name = db.Column(db.String, unique=True, nullable=False)
 
 
-class Value(db.Model):
+class Value(ModelMixin, db.Model):
     """
     Css layout.
 
@@ -34,7 +31,7 @@ class Value(db.Model):
     __tablename__ = 'value'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     property_id = db.Column(
         db.Integer,
         db.ForeignKey('property.id', onupdate="CASCADE", ondelete="CASCADE")
@@ -45,10 +42,13 @@ class Value(db.Model):
     inline = db.Column(
         db.Boolean, server_default=expression.true(), nullable=False
     )
-
-    def __repr__(self):
-        """View object class."""
-        return "<{}(name='{}')>".format(self.__class__.__name__, self.name)
+    block = db.Column(
+        db.Boolean, server_default=expression.true(), nullable=False
+    )
+    __table_args__ = (
+        db.UniqueConstraint(
+            'property_id', 'name', name='_name__property_id__uc'),
+    )
 
     @classmethod
     def pd_name_by_pr(cls, pr):

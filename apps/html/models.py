@@ -1,10 +1,31 @@
-# """Models to describe the tables of db."""
-#
-#
-# from sqlalchemy import ARRAY, Boolean, Column, Integer, String, Table
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy.orm import relationship
-# from sqlalchemy.schema import ForeignKey
+"""Models to describe the tables of db."""
+
+from sqlalchemy.sql import expression
+
+from app import db
+from wts.db import ModelMixin
+
+
+class Classes(ModelMixin, db.Model):
+    """
+    Classes for tags.
+
+    Model hold list from attr class tag.
+    <div class="class1"></div>
+        (class1, )
+    <div class="class1 class2"></div>
+        (class1, class2, )
+    """
+
+    __tablename__ = 'class'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String, unique=True)
+    belong_to_component = db.Column(
+        db.Boolean, server_default=expression.true(), nullable=False
+    )
+
+
 #
 # Base = declarative_base()
 #

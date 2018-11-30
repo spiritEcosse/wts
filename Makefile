@@ -1,24 +1,22 @@
 deploy:
-	docker-compose up --build
+	docker-compose up
 
 deploy_hard:
 	docker-compose stop && docker-compose rm -f && docker-compose up --build
 
-ipython_web:
+ipython:
 	docker-compose exec web ipython
 
-bash_web:
+bash:
 	docker-compose exec web bash
 
-test_verbose:
-	docker-compose exec web python -m pytest tests/ -vv
-
 test:
-	docker-compose exec web python -m pytest tests/
+	docker-compose exec web ./test.sh
 	# PYTHONPATH=. py.test
+	# verbose - -vv
 
 init:
-	docker-compose exec web flask db init
+	docker-compose exec web flask db init --multidb
 
 migrate:
 	docker-compose exec web flask db migrate

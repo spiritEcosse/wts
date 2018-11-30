@@ -1,0 +1,16 @@
+**/*.jpg
+**/*.png
+**/*.pyc
+**/*.solverstate
+**/*.caffemodel
+**/*.tgz
+**/.pytest_cache
+**/*__pycache__*
+**/.git
+**/node_modules
+*.egg-info
+.eggs
+*Dockerfile*
+build
+dist
+app.db
