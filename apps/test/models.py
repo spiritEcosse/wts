@@ -20,6 +20,23 @@ class Case(ModelMixin, db.Model):
     expected = db.Column(db.PickleType)
     input = db.Column(db.PickleType)
 
+    @property
+    def input_expected(self):
+        """
+        Quick access to object data.
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+        type: tuple
+            Tuple fields input, expected.
+
+        """
+        return self.input, self.expected
+
 
 @event.listens_for(Case.input, 'set')
 def validate_input(target, value, oldvalue, initiator):

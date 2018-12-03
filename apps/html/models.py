@@ -25,8 +25,6 @@ class Classes(ModelMixin, db.Model):
         db.Boolean, server_default=expression.true(), nullable=False
     )
 
-
-#
 # Base = declarative_base()
 #
 #

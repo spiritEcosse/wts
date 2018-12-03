@@ -7,6 +7,9 @@ deploy_hard:
 ipython:
 	docker-compose exec web ipython
 
+freeze:
+	docker-compose exec web pip freeze > requirements.txt
+
 bash:
 	docker-compose exec web bash
 

@@ -45,7 +45,13 @@ def initial_data(app):
     Value(name='block', property=pr, inline=False).save()
     Value(name='inline', property=pr, block=False).save()
     Value(name='inline-block', property=pr).save()
-    [Classes(name=name).save() for name in ['card', 'card-body']]
+    [
+        Classes(name=name).save()
+        for name in ['card', "card-body", "card-title", "card-text",
+                     "bg-primary", "border-none", "row", "text-center",
+                     "text-white", "col-5", "col-7",
+                     "align-self-center"]
+    ]
 
 
 def pytest_generate_tests(metafunc):

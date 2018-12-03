@@ -1,5 +1,5 @@
 import pytest
-from apps.css.models import Property, Value
+from apps.css.models import Property
 from apps.html.analyze import Analyze
 
 data_test = (
@@ -14,7 +14,7 @@ data_test = (
     # ({"float": "left", "display": "inline", "width": 500}, True),  # 8
     # ({"float": "left", "display": "inline", "width": 2000}, False),  # 9 !
     # ({"float": "left", "display": "inline-block", "width": 500}, True),  # 10
-    # ({"float": "left", "display": "inline-block", "width": 2000}, False),  # 11
+    # ({"float": "left", "display": "inline-block", "width": 2000}, False),# 11
     # ({"float": "right", "display": "inline", "width": 2000}, False),  # 12 !
     # ({"float": "none", "display": "inline", "width": 2000}, True),  # 13 !
     # ({"float": "right", "display": "inline", "width": 500}, False),  # 14 !
@@ -91,12 +91,3 @@ def test_initial_data():
 def test_vertical_center(case):
     analyze = Analyze(case.input['css'])
     assert analyze.vertical_center() == case.expected['res']
-
-
-@pytest.mark.db
-def test_merge(case):
-    analyze = Analyze(
-        css=case.input.get('css', {}),
-        html=case.input.get('html', '')
-    )
-    assert analyze.merge() == case.expected['res']

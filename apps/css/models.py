@@ -1,9 +1,7 @@
 """Models to describe the tables of css app."""
 
-from sqlalchemy.orm import load_only
 from sqlalchemy.sql import expression
 
-import pandas as pd
 from app import db
 from wts.db import ModelMixin
 
@@ -49,13 +47,3 @@ class Value(ModelMixin, db.Model):
         db.UniqueConstraint(
             'property_id', 'name', name='_name__property_id__uc'),
     )
-
-    @classmethod
-    def pd_name_by_pr(cls, pr):
-        """Get all names from this class by property."""
-        pr = Property.query.filter_by(name='display').one()
-
-        return pd.read_sql(
-            cls.query.with_parent(pr).options(load_only("name")).statement,
-            db.session.bind
-        ).name
