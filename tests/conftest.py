@@ -53,6 +53,9 @@ def initial_data(app):
                      "align-self-center"]
     ]
 
+    border = Property(name='border').save()
+    Classes(name='card', properties=[border]).save()
+
 
 def pytest_generate_tests(metafunc):
     func = metafunc.function

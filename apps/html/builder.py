@@ -68,7 +68,7 @@ class Builder():
 
         Returns
         -------
-        bs4.element.Tag
+        type : bs4.element.Tag
             Creates a new html tag `new_tag` based on attributes and type
             `tag`.
 

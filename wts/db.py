@@ -1,4 +1,7 @@
 """Base Model."""
+
+from sqlalchemy import inspect
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import load_only
 
 import pandas as pd
@@ -15,11 +18,42 @@ class ModelMixin:
     def save(self):
         """
         Save object to db.
+        Auto update if caught IntexgrityError.
 
-        Return this object.
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+        type
+            The object of the model that inherits this mixin.
+
         """
-        self.query.session.add(self)
-        self.query.session.commit()
+
+        def commit():
+            self.query.session.add(self)
+            self.query.session.commit()
+
+        try:
+            commit()
+        except IntegrityError:
+            self.query.session.rollback()
+            self.query.session.flush()
+
+            find = self.query.filter_by(name=self.name).one()
+            columns = inspect(self).attrs.keys()
+            columns.remove('id')
+
+            for field in columns:
+                value = getattr(self, field, None)
+
+                if value is not None:  # field maybe is None
+                    setattr(find, field, value)
+
+            self = find
+            commit()
+
         return self
 
     def delete(self):
@@ -40,10 +74,13 @@ class ModelMixin:
         return: list names.
         """
 
-        query = apply_filters(cls.query, filter_spec) \
-            if filter_spec else cls.query
+        query = cls.filter(filter_spec) if filter_spec else cls.query
 
         return list(pd.read_sql(
             query.options(load_only("name")).statement,
             cls.query.session.bind
         ).name)
+
+    @classmethod
+    def filter(cls, filter_spec):
+        return apply_filters(cls.query, filter_spec)

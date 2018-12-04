@@ -124,10 +124,10 @@ class Tag():
             self.attrs['class'].append('bg-primary')
 
     def add_border(self):
-        size, style, color = self.border()
-
-        if int(size) != 0 and color != 'rgba(0, 0, 0, 0)':
-            self.attrs['class'].append('border-none')
+        if self.has_class():
+            if Classes.have_pr(self.attrs['class'], 'border') is not None:
+                if not int(self.border()[0]):
+                    self.attrs['class'].append('border-none')
 
     @property
     def need_merge(self):
@@ -143,18 +143,20 @@ class Tag():
             False.
 
         """
-        filter_spec = [
-            {
-                'and': [
-                    {'field': 'name', 'op': 'in',
-                        'value': self.attrs['class']},
-                    {'field': 'belong_to_component',
-                        'op': '==', 'value': True},
-                ]
-            }
-        ]
-        return apply_filters(Classes.query, filter_spec).scalar() is None \
-            and self.width == self.parent.width
+        if self.has_class():
+            filter_spec = [
+                {
+                    'and': [
+                        {'field': 'name', 'op': 'in',
+                            'value': self.attrs['class']},
+                        {'field': 'belong_to_component',
+                            'op': '==', 'value': True},
+                    ]
+                }
+            ]
+            return apply_filters(Classes.query, filter_spec).scalar() is None \
+                and self.width == self.parent.width
+        return False
 
     def has_class(self):
         """Check only class.

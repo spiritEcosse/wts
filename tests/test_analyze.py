@@ -83,7 +83,7 @@ data_test_vertical_center = (
 #
 
 def test_initial_data():
-    assert Property.query.count() == 1
+    assert Property.query.count() == 2
     assert len(Property.query.first().values) == 3
 
 

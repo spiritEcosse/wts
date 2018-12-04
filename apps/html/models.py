@@ -1,9 +1,16 @@
 """Models to describe the tables of db."""
 
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
 
 from app import db
 from wts.db import ModelMixin
+
+classes_properties = db.Table(
+    'classes_properties', db.metadata,
+    db.Column('class_id', db.ForeignKey('class.id'), primary_key=True),
+    db.Column('property_id', db.ForeignKey('property.id'), primary_key=True)
+)
 
 
 class Classes(ModelMixin, db.Model):
@@ -24,6 +31,16 @@ class Classes(ModelMixin, db.Model):
     belong_to_component = db.Column(
         db.Boolean, server_default=expression.true(), nullable=False
     )
+    properties = relationship(
+        'Property', secondary=classes_properties,
+        backref=db.backref('classes', lazy=True)
+    )
+
+    @classmethod
+    def have_pr(cls, classes, pr):
+        return cls.query.filter(cls.name.in_(classes)).filter(
+            cls.properties.any(cls.properties.mapper.class_.name == pr)
+        ).scalar()
 
 # Base = declarative_base()
 #
