@@ -13,6 +13,9 @@ freeze:
 bash:
 	docker-compose exec web bash
 
+cov:
+	docker-compose exec web ./test_cov.sh
+
 test:
 	docker-compose exec web ./test.sh
 	# PYTHONPATH=. py.test
