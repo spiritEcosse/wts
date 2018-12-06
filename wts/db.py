@@ -15,6 +15,9 @@ class ModelMixin:
         """View object class."""
         return "<{}(name='{}')>".format(self.__class__.__name__, self.name)
 
+    def to_dict(self, fields=[]):
+        return {field: getattr(self, field) for field in fields or self.columns}
+
     def save(self):
         """
         Save object to db.
@@ -42,10 +45,8 @@ class ModelMixin:
             self.query.session.flush()
 
             find = self.query.filter_by(name=self.name).one()
-            columns = inspect(self).attrs.keys()
-            columns.remove('id')
 
-            for field in columns:
+            for field in self.columns:
                 value = getattr(self, field, None)
 
                 if value is not None:  # field maybe is None
@@ -55,6 +56,45 @@ class ModelMixin:
             commit()
 
         return self
+
+    @property
+    def columns(self):
+        """Returns all fields for this model excluding id and including
+        fields of related models.
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+        type: list
+            Returns list of str.
+
+        """
+        columns = inspect(self).attrs.keys()
+        columns.remove('id')
+        return columns
+
+    def rel(self, rel_prop, iterable):
+        """Creates objects of related models.
+
+        Parameters
+        ----------
+        rel_prop : type sqlalchemy.orm.properties.RelationshipProperty
+            Object RelationshipProperty.
+        iterable : type list.
+            List with nested dictionaries.
+
+        Returns
+        -------
+        type : list
+            Returns list objects of related models.
+
+        """
+        return list(map(
+            lambda data: rel_prop.mapper.class_(**data).save(), iterable
+        ))
 
     def delete(self):
         """
@@ -84,3 +124,7 @@ class ModelMixin:
     @classmethod
     def filter(cls, filter_spec):
         return apply_filters(cls.query, filter_spec)
+
+    @classmethod
+    def unique(cls, field='name'):
+        return cls.query.group_by(field).all()

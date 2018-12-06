@@ -29,3 +29,6 @@ migrate:
 
 upgrade: migrate
 	docker-compose exec web flask db upgrade
+
+downgrade:
+	docker-compose exec web flask db downgrade

@@ -1,4 +1,5 @@
 from sqlalchemy import event
+from sqlalchemy.sql import expression
 
 from app import db
 from wts.db import ModelMixin
@@ -19,6 +20,11 @@ class Case(ModelMixin, db.Model):
     name = db.Column(db.String, nullable=False)
     expected = db.Column(db.PickleType)
     input = db.Column(db.PickleType)
+    klass = db.Column(db.String, nullable=False, server_default='Builder')
+    event = db.Column(db.String)
+    unique = db.Column(
+        db.Boolean, server_default=expression.false(), nullable=False
+    )
 
     @property
     def input_expected(self):

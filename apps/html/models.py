@@ -42,6 +42,7 @@ class Classes(ModelMixin, db.Model):
             cls.properties.any(cls.properties.mapper.class_.name == pr)
         ).scalar()
 
+
 # Base = declarative_base()
 #
 #

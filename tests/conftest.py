@@ -41,20 +41,20 @@ def app():
 @pytest.fixture
 def initial_data(app):
     """Fixture initial data."""
-    pr = Property(name='display').save()
-    Value(name='block', property=pr, inline=False).save()
-    Value(name='inline', property=pr, block=False).save()
-    Value(name='inline-block', property=pr).save()
-    [
-        Classes(name=name).save()
-        for name in ['card', "card-body", "card-title", "card-text",
-                     "bg-primary", "border-none", "row", "text-center",
-                     "text-white", "col-5", "col-7",
-                     "align-self-center"]
-    ]
-
-    border = Property(name='border').save()
-    Classes(name='card', properties=[border]).save()
+    # pr = Property(name='display').save()
+    # Value(name='block', property=pr, inline=False).save()
+    # Value(name='inline', property=pr, block=False).save()
+    # Value(name='inline-block', property=pr).save()
+    # [
+    #     Classes(name=name).save()
+    #     for name in ['card', "card-body", "card-title", "card-text",
+    #                  "bg-primary", "border-none", "row", "text-center",
+    #                  "text-white", "col-5", "col-7",
+    #                  "align-self-center"]
+    # ]
+    #
+    # border = Property(name='border').save()
+    # Classes(name='card', properties=[border]).save()
 
 
 def pytest_generate_tests(metafunc):
