@@ -2,7 +2,7 @@
 
 from sqlalchemy import inspect
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import load_only
+from sqlalchemy.orm import load_only, object_mapper, properties
 
 import pandas as pd
 from sqlalchemy_filters import apply_filters
@@ -16,7 +16,9 @@ class ModelMixin:
         return "<{}(name='{}')>".format(self.__class__.__name__, self.name)
 
     def to_dict(self, fields=[]):
-        return {field: getattr(self, field) for field in fields or self.columns}
+        return {
+            field: getattr(self, field) for field in fields or self.columns()
+        }
 
     def save(self):
         """
@@ -46,7 +48,7 @@ class ModelMixin:
 
             find = self.query.filter_by(name=self.name).one()
 
-            for field in self.columns:
+            for field in self.columns():
                 value = getattr(self, field, None)
 
                 if value is not None:  # field maybe is None
@@ -57,7 +59,6 @@ class ModelMixin:
 
         return self
 
-    @property
     def columns(self):
         """Returns all fields for this model excluding id and including
         fields of related models.
@@ -77,7 +78,8 @@ class ModelMixin:
         return columns
 
     def rel(self, rel_prop, iterable):
-        """Creates objects of related models.
+        """Creates objects of related models without creating them in the
+        database.
 
         Parameters
         ----------
@@ -93,7 +95,7 @@ class ModelMixin:
 
         """
         return list(map(
-            lambda data: rel_prop.mapper.class_(**data).save(), iterable
+            lambda data: rel_prop.mapper.class_(**data), iterable
         ))
 
     def delete(self):
@@ -126,5 +128,24 @@ class ModelMixin:
         return apply_filters(cls.query, filter_spec)
 
     @classmethod
-    def unique(cls, field='name'):
+    def group_by(cls, field='name'):
         return cls.query.group_by(field).all()
+
+    def relf(self):
+        """Get a list of fields that have connections to other models.
+
+        Parameters
+        ----------
+
+
+        Returns
+        -------
+        type: list
+            List of objects of type
+            sqlalchemy.orm.properties.RelationshipProperty.
+
+        """
+        return list(filter(
+            lambda p: isinstance(p, properties.RelationshipProperty),
+            object_mapper(self).iterate_properties
+        ))

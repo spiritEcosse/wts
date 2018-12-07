@@ -16,7 +16,7 @@ bash:
 cov:
 	docker-compose exec web ./test_cov.sh
 
-test:
+test_all:
 	docker-compose exec web ./test.sh
 	# PYTHONPATH=. py.test
 	# verbose - -vv
