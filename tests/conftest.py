@@ -108,7 +108,7 @@ class Factory:
                     assert getattr(self.obj, attr) == self.case.expected[attr]
 
     def func(self):
-        getattr(self.obj, self.func_name)()
+        assert callable(getattr(self.obj, self.func_name)) is True
 
     def get_func(self):
         return self.case.input.get('func', [])

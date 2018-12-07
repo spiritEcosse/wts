@@ -39,13 +39,13 @@
 #
 # turtle.exitonclick()
 
-import turtle
-
-bob = turtle.Turtle()
-bob.fillcolor('orange')
-bob.begin_fill()
-bob.circle(250)
-bob.begin_fill()
-
-ts = bob.getscreen()
-ts.getcanvas().postscript(file='turtle.eps', colormode='color')
+# import turtle
+#
+# bob = turtle.Turtle()
+# bob.fillcolor('orange')
+# bob.begin_fill()
+# bob.circle(250)
+# bob.begin_fill()
+#
+# ts = bob.getscreen()
+# ts.getcanvas().postscript(file='turtle.eps', colormode='color')
