@@ -3,15 +3,25 @@ version:            '2'
 services:
   web:
     build:          .
+    command:        bash -c "sleep infinity"
+    environment:
+      APP_SETTINGS: "wts.config.DevelopmentConfig"
     volumes:
       - ~/.ipython:/root/.ipython
       - .:/wts
-    command:        flask run -h 0.0.0.0 -p 80
-    environment:
-      APP_SETTINGS: "wts.config.DevelopmentConfig"
-      FLASK_ENV:    development
-    ports:
-      - "5001:80"
+
+
+  # web:
+  #   build:        .
+  #   volumes:
+  #     - ~/.ipython:/root/.ipython
+  #     - .:/wts
+  #   command:      flask run -h 0.0.0.0 -p 80
+  #   environment:
+  #     APP_SETTINGS: "wts.config.DevelopmentConfig"
+  #     FLASK_ENV:  development
+  #   ports:
+  #     - "5001:80"
 
   # flask:
   #   build:        .
