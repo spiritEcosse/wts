@@ -1,6 +1,12 @@
 deploy:
 	docker-compose up
 
+deploy_detach:
+	docker-compose up -d
+
+deploy_build:
+	docker-compose up --build
+	
 deploy_hard:
 	docker-compose stop && docker-compose rm -f && docker-compose up --build
 
