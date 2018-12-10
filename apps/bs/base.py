@@ -1,26 +1,28 @@
 import re
+import uuid
 from types import FunctionType
 
 from bs4 import BeautifulSoup
 
 from apps.html.models import Classes
-from selenium import webdriver
 from sqlalchemy_filters import apply_filters
-from wts import settings
+from wts.settings import FILE_HTML, URL_FILE_HTML
+from wts.utils import create_driver
 
 
 class Bs(BeautifulSoup):
-    def __init__(self, url='', features="html.parser", **kwargs):
-        html = ''
+    def __init__(self, url='', html='', features="html.parser", **kwargs):
+        if html:
+            path = FILE_HTML.format(str(uuid.uuid4()))
+            with open(path, "w") as f:
+                f.write(html)
+                url = URL_FILE_HTML.format(path)
 
         if url:
-            driver = webdriver.Remote(
-                command_executor=settings.REMOTE_DRIVER,
-                desired_capabilities=settings.CAPABILITIES,
-            )
+            driver = create_driver()
             driver.get(url)
             self.__class__.__base__.__base__.driver = driver
-            html = driver.page_source
+            self.html = driver.page_source
 
         return super().__init__(html, features, **kwargs)
 

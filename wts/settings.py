@@ -23,6 +23,9 @@ PROJECT = PROJECT_SETTINGS.split(os.sep)[-1]
 
 BOT_NAME = PROJECT
 BASE_DIR = os.path.dirname(PROJECT_SETTINGS)
+TESTS_DIR = os.path.join(BASE_DIR, 'tests')
+FILE_HTML = os.path.join(TESTS_DIR, 'tmp', '{}.html')
+URL_FILE_HTML = 'file://{}'
 
 SPIDER_MODULES = ['wts.spiders']
 NEWSPIDER_MODULE = 'wts.spiders'

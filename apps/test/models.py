@@ -20,6 +20,7 @@ class Case(ModelMixin, db.Model):
     name = db.Column(db.String, nullable=False)
     expected = db.Column(db.PickleType)
     input = db.Column(db.PickleType)
+    func = db.Column(db.PickleType)
     klass = db.Column(db.PickleType, nullable=False)
     event = db.Column(db.String)
     unique = db.Column(
