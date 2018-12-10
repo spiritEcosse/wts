@@ -6,9 +6,9 @@ deploy_detach:
 
 deploy_build:
 	docker-compose up --build
-	
+
 deploy_hard:
-	docker-compose stop && docker-compose rm -f && docker-compose up --build
+	docker-compose stop && docker-compose rm -f && docker-compose up -d --build
 
 ipython:
 	docker-compose exec web ipython

@@ -7,12 +7,8 @@ create app, initial_data.
 import pytest
 from app import app as core_app
 from app import db
-from apps.css.models import Property, Value
-from apps.html.models import Classes
 from apps.test.models import Case
 from wts.config import TestingConfig
-
-mod = __import__('apps')
 
 
 @pytest.fixture
@@ -64,7 +60,7 @@ class Factory:
     def __init__(self, case, func_name=None):
         self.case = case
         self.func_name = func_name
-        self.obj = getattr(mod, case.klass)()
+        self.obj = case.klass()
 
         for rel in self.obj.relf():
             value = self.case.input.pop(
