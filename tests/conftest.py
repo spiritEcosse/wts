@@ -76,6 +76,7 @@ class Factory:
 
             for field, value in self.case.input.items():
                 setattr(self.obj, field, value)
+            # self.save_obj()
         else:
             self.obj = case.klass(**case.input)
 
@@ -89,42 +90,59 @@ class Factory:
     def exp_keys_set(self):
         return set(self.case.expected.keys())
 
+    def save_obj(self):
+        self.obj.save()
+
+    def scope_func(self):
+        if self.is_model:
+            self.save_obj()
+        self.assert_func()
+
+    def assert_obj_model_param(self):
+        self.save_obj()
+        obj_keys = set(map(lambda val: val.key, self.obj.relf()))
+
+        for attr in self.exp_keys_set().intersection(obj_keys):
+            assert \
+                [rel_obj.to_dict(['name']) for rel_obj in
+                 getattr(self.obj, attr)] == self.case.expected[attr]
+
+        for attr in self.exp_keys_set().difference(obj_keys):
+            assert getattr(
+                self.obj, attr) == self.case.expected[attr]
+
+    def scope_obj_model(self):
+        if self.case.event is None:
+            self.assert_obj_model_param()
+        else:
+            self.event()
+
+    def assert_obj_param(self):
+        for key, value in self.case.expected.items():
+            base_obj = self.obj
+
+            for base_attr in key.split(os.extsep):
+                base_obj = getattr(base_obj, base_attr)
+
+            if isinstance(value, dict):
+                if 'type' in value:
+                    assert isinstance(base_obj, value['type'])
+            else:
+                assert base_obj == value
+
+    def scope_obj(self):
+        if self.is_model:
+            self.scope_obj_model()
+        else:
+            self.assert_obj_param()
+
     def run(self):
         if self.func_name:
-            self.obj.save()
-            self.func()
+            self.scope_func()
         else:
-            if self.is_model:
-                obj_keys = set(map(lambda val: val.key, self.obj.relf()))
+            self.scope_obj()
 
-                if self.case.event is not None:
-                    self.event()
-                else:
-                    self.obj.save()
-
-                    for attr in self.exp_keys_set().intersection(obj_keys):
-                        assert \
-                            [rel_obj.to_dict(['name']) for rel_obj in
-                             getattr(self.obj, attr)] == self.case.expected[attr]
-
-                    for attr in self.exp_keys_set().difference(obj_keys):
-                        assert getattr(
-                            self.obj, attr) == self.case.expected[attr]
-            else:
-                for key, value in self.case.expected.items():
-                    base_obj = self.obj
-
-                    for base_attr in key.split(os.extsep):
-                        base_obj = getattr(base_obj, base_attr)
-
-                    if isinstance(value, dict):
-
-                        if 'type' in value:
-                            assert isinstance(base_obj, value['type'])
-                    else:
-                        assert base_obj == value
-
-    def func(self):
+    def assert_func(self):
         assert callable(getattr(self.obj, self.func_name)) is True
 
     def get_func(self):
