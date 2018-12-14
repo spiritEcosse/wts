@@ -59,9 +59,9 @@ def initial_data(app):
 
 class Factory:
 
-    def __init__(self, case, func_name=None):
+    def __init__(self, case, func=None):
         self.case = case
-        self.func_name = func_name
+        self.func = func
         self.is_model = hasattr(case.klass, '__table__')
         self.obj = case.klass()
 
@@ -108,8 +108,7 @@ class Factory:
                  getattr(self.obj, attr)] == self.case.expected[attr]
 
         for attr in self.exp_keys_set().difference(obj_keys):
-            assert getattr(
-                self.obj, attr) == self.case.expected[attr]
+            assert getattr(self.obj, attr) == self.case.expected[attr]
 
     def scope_obj_model(self):
         if self.case.event is None:
@@ -137,13 +136,16 @@ class Factory:
             self.assert_obj_param()
 
     def run(self):
-        if self.func_name:
+        if self.func:
             self.scope_func()
         else:
             self.scope_obj()
 
     def assert_func(self):
-        assert callable(getattr(self.obj, self.func_name)) is True
+        if isinstance(self.func, str):
+            assert callable(getattr(self.obj, self.func)) is True
+        elif isinstance(self.func, dict):
+            pass
 
     def get_func(self):
         return self.case.func or []
@@ -160,11 +162,7 @@ def pytest_generate_tests(metafunc):
             cases.append(factory)
 
             for func in factory.get_func():
-                if isinstance(func, str):
-                    factory = Factory(case, func_name=func)
-                    cases.append(factory)
-                # elif isinstance(func, dict):
-                #     factory = Factory(case, func=func)
-                #     cases.append(factory)
+                factory = Factory(case, func=func)
+                cases.append(factory)
 
         metafunc.parametrize("factory", cases)
