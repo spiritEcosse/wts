@@ -58,6 +58,7 @@ def initial_data(app):
 
 
 class Factory:
+    exp = 'expected'
 
     def __init__(self, case, func=None):
         self.case = case
@@ -145,10 +146,18 @@ class Factory:
         if isinstance(self.func, str):
             assert callable(getattr(self.obj, self.func)) is True
         elif isinstance(self.func, dict):
-            pass
+            for key, values in self.func.items():
+                base_obj = self.obj
 
-    def get_func(self):
-        return self.case.func or []
+                for base_attr in key.split(os.extsep):
+                    base_obj = getattr(base_obj, base_attr)
+
+                try:
+                    func = base_obj
+                    assert func == values[self.exp]
+                except AssertionError as er:
+                    print(self.case.id, self.obj)
+                    raise er
 
 
 def pytest_generate_tests(metafunc):
@@ -158,10 +167,11 @@ def pytest_generate_tests(metafunc):
         cases = []
 
         for case in Case.query.filter_by(name=func.__name__):
-            factory = Factory(case)
-            cases.append(factory)
+            if case.expected:
+                factory = Factory(case)
+                cases.append(factory)
 
-            for func in factory.get_func():
+            for func in case.func or []:
                 factory = Factory(case, func=func)
                 cases.append(factory)
 

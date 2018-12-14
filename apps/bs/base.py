@@ -12,6 +12,8 @@ from wts.utils import create_driver
 
 class Bs(BeautifulSoup):
     def __init__(self, url='', html='', features="html.parser", **kwargs):
+        self.html = ''
+
         if html:
             path = FILE_HTML.format(str(uuid.uuid4()))
             with open(path, "w") as f:
@@ -24,7 +26,7 @@ class Bs(BeautifulSoup):
             self.__class__.__base__.__base__.driver = driver
             self.html = driver.page_source
 
-        return super().__init__(html, features, **kwargs)
+        super().__init__(self.html, features, **kwargs)
 
 
 class Tag():
@@ -145,6 +147,8 @@ class Tag():
             False.
 
         """
+        check = [self.width == self.parent.width]
+
         if self.has_class():
             filter_spec = [
                 {
@@ -156,9 +160,11 @@ class Tag():
                     ]
                 }
             ]
-            return apply_filters(Classes.query, filter_spec).scalar() is None \
-                and self.width == self.parent.width
-        return False
+            check.append(
+                apply_filters(Classes.query, filter_spec).scalar() is None
+            )
+
+        return all(check)
 
     def has_class(self):
         """Check only class.
