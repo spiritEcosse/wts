@@ -3,6 +3,7 @@ import uuid
 from types import FunctionType
 
 from bs4 import BeautifulSoup
+from bs4.element import Tag as BaseTag
 
 from apps.html.models import Classes
 from sqlalchemy_filters import apply_filters
@@ -20,17 +21,101 @@ class Bs(BeautifulSoup):
                 f.write(html)
                 url = URL_FILE_HTML.format(path)
 
+        self.driver = create_driver()
+
         if url:
-            driver = create_driver()
-            driver.get(url)
-            self.__class__.__base__.__base__.driver = driver
-            self.html = driver.page_source
+            self.driver.get(url)
+            self.html = self.driver.page_source
 
         super().__init__(self.html, features, **kwargs)
 
 
 class Tag():
-    @property
+    def __init__(self, parser=None, builder=None, name=None, namespace=None,
+                 prefix=None, attrs=None, parent=None, previous=None,
+                 is_xml=None):
+        "Basic constructor."
+        self.driver = parser.driver
+
+        if parser is None:
+            self.parser_class = None
+        else:
+            # We don't actually store the parser object: that lets extracted
+            # chunks be garbage-collected.
+            self.parser_class = parser.__class__
+        if name is None:
+            raise ValueError("No value provided for new tag's name.")
+        self.name = name
+        self.namespace = namespace
+        self.prefix = prefix
+        if builder is not None:
+            preserve_whitespace_tags = builder.preserve_whitespace_tags
+        else:
+            if is_xml:
+                preserve_whitespace_tags = []
+            else:
+                preserve_whitespace_tags = HTMLAwareEntitySubstitution.preserve_whitespace_tags
+        self.preserve_whitespace_tags = preserve_whitespace_tags
+        if attrs is None:
+            attrs = {}
+        elif attrs:
+            if builder is not None and builder.cdata_list_attributes:
+                attrs = builder._replace_cdata_list_attribute_values(
+                    self.name, attrs)
+            else:
+                attrs = dict(attrs)
+        else:
+            attrs = dict(attrs)
+
+        # If possible, determine ahead of time whether this tag is an
+        # XML tag.
+        if builder:
+            self.known_xml = builder.is_xml
+        else:
+            self.known_xml = is_xml
+        self.attrs = attrs
+        self.contents = []
+        self.setup(parent, previous)
+        self.hidden = False
+
+        # Set up any substitutions, such as the charset in a META tag.
+        if builder is not None:
+            builder.set_up_substitutions(self)
+            self.can_be_empty_element = builder.can_be_empty_element(name)
+        else:
+            self.can_be_empty_element = False
+
+    def _value_of_css_property(self, property):
+        """Return css property value via selenium.
+
+        Parameters
+        ----------
+        property : str
+            The name of one of the key properties of css styles.
+
+        Returns
+        -------
+        type: str
+            Unformatted string.
+
+        """
+        element = self.driver.find_element_by_xpath(self.xpath())
+        return element.value_of_css_property(property)
+
+    # @property
+    def width(self):
+        """Return css property value width for this tag via selenium.
+        Parameters
+        ----------
+
+        Returns
+        -------
+        type: str
+            Unformatted string.
+
+        """
+        return self._value_of_css_property('width')
+
     def xpath(self):
         """Makes up the 'xpath' of the parents of this object.
 
@@ -56,37 +141,6 @@ class Tag():
             child = parent
         components.reverse()
         return '/%s' % '/'.join(components)
-
-    @property
-    def width(self):
-        """Return css property value width for this tag via selenium.
-        Parameters
-        ----------
-
-        Returns
-        -------
-        type: str
-            Unformatted string.
-
-        """
-        return self._value_of_css_property('width')
-
-    def _value_of_css_property(self, property):
-        """Return css property value via selenium.
-
-        Parameters
-        ----------
-        property : str
-            The name of one of the key properties of css styles.
-
-        Returns
-        -------
-        type: str
-            Unformatted string.
-
-        """
-        element = self.driver.find_element_by_xpath(self.xpath)
-        return element.value_of_css_property(property)
 
     @property
     def bgc(self):
@@ -133,7 +187,7 @@ class Tag():
                 if not int(self.border()[0]):
                     self.attrs['class'].append('border-none')
 
-    @property
+    # @property
     def need_merge(self):
         """Checks whether you need to add the child to the parent.
 
@@ -147,7 +201,7 @@ class Tag():
             False.
 
         """
-        check = [self.width == self.parent.width]
+        check = [self.width() == self.parent.width()]
 
         if self.has_class():
             filter_spec = [

@@ -9,6 +9,7 @@ import os
 import pytest
 from app import app as core_app
 from app import db
+from apps.bs.base import Bs
 from apps.test.models import Case
 from wts.config import TestingConfig
 
@@ -64,7 +65,11 @@ class Factory:
         self.case = case
         self.func = func
         self.is_model = hasattr(case.klass, '__table__')
-        self.obj = case.klass()
+
+        if isinstance(case.klass, str):
+            self.obj = Bs()
+        else:
+            self.obj = case.klass()
 
         if self.is_model:
             for rel in self.obj.relf():
@@ -79,7 +84,10 @@ class Factory:
                 setattr(self.obj, field, value)
             # self.save_obj()
         else:
-            self.obj = case.klass(**case.input)
+            if isinstance(case.klass, str):
+                self.obj = Bs(**case.input)
+            else:
+                self.obj = case.klass(**case.input)
 
     def event(self):
         getattr(self, 'event_{}'.format(self.case.event))()
@@ -139,6 +147,9 @@ class Factory:
     def run(self):
         if self.func:
             self.scope_func()
+            if not self.is_model:
+                self.obj.driver.close()
+                self.obj.driver.quit()
         else:
             self.scope_obj()
 
@@ -152,12 +163,8 @@ class Factory:
                 for base_attr in key.split(os.extsep):
                     base_obj = getattr(base_obj, base_attr)
 
-                try:
-                    func = base_obj
-                    assert func == values[self.exp]
-                except AssertionError as er:
-                    print(self.case.id, self.obj)
-                    raise er
+                func = base_obj
+                assert func() == values[self.exp]
 
 
 def pytest_generate_tests(metafunc):
