@@ -13,7 +13,7 @@ from wts.utils import create_driver
 
 class Bs(BeautifulSoup):
     def __init__(self, url='', html='', features="html.parser", **kwargs):
-        self.html = ''
+        self.html = ""
 
         if html:
             path = FILE_HTML.format(str(uuid.uuid4()))
@@ -21,21 +21,20 @@ class Bs(BeautifulSoup):
                 f.write(html)
                 url = URL_FILE_HTML.format(path)
 
-        self.driver = create_driver()
-
         if url:
+            self.driver = create_driver()
             self.driver.get(url)
             self.html = self.driver.page_source
 
         super().__init__(self.html, features, **kwargs)
 
 
-class Tag():
+class Tag:
     def __init__(self, parser=None, builder=None, name=None, namespace=None,
                  prefix=None, attrs=None, parent=None, previous=None,
                  is_xml=None):
         "Basic constructor."
-        self.driver = parser.driver
+        self.driver = getattr(parser, 'driver', None)
 
         if parser is None:
             self.parser_class = None
@@ -102,7 +101,7 @@ class Tag():
         element = self.driver.find_element_by_xpath(self.xpath())
         return element.value_of_css_property(property)
 
-    # @property
+    @property
     def width(self):
         """Return css property value width for this tag via selenium.
         Parameters

@@ -9,7 +9,6 @@ import os
 import pytest
 from app import app as core_app
 from app import db
-from apps.bs.base import Bs
 from apps.test.models import Case
 from wts.config import TestingConfig
 
@@ -66,12 +65,9 @@ class Factory:
         self.func = func
         self.is_model = hasattr(case.klass, '__table__')
 
-        if isinstance(case.klass, str):
-            self.obj = Bs()
-        else:
+        if self.is_model:
             self.obj = case.klass()
 
-        if self.is_model:
             for rel in self.obj.relf():
                 value = self.case.input.pop(
                     rel.key) if rel.key in self.case.input else None
@@ -84,10 +80,7 @@ class Factory:
                 setattr(self.obj, field, value)
             # self.save_obj()
         else:
-            if isinstance(case.klass, str):
-                self.obj = Bs(**case.input)
-            else:
-                self.obj = case.klass(**case.input)
+            self.obj = case.klass(**case.input)
 
     def event(self):
         getattr(self, 'event_{}'.format(self.case.event))()

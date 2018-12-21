@@ -8,7 +8,7 @@ def test_all(factory):
     try:
         factory.run()
     except Exception as er:
-        print(self.case.id)
+        print(factory.case.id)
         raise er
 
 

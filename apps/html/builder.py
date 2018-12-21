@@ -54,6 +54,7 @@ class Builder():
         self.bs_input.div.add_bg()
         self.bs_input.div.add_border()
         self.bs = self.tree(self.bs_input.div)
+        return self.prettify()
 
     def tree(self, tag, parent_tag=''):
         """The main method passes through all elements of the tree recursively.
