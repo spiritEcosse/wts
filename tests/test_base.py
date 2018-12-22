@@ -12,6 +12,10 @@ def test_all(factory):
         raise er
 
 
+@pytest.mark.db
+def test_functional(factory):
+    pass
+
 # @pytest.mark.db
 # def test_all(case):
 #     klass = mod.getattr(case.klass)

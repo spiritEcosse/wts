@@ -74,7 +74,7 @@ class Builder():
             `tag`.
 
         """
-        tag.clear_class()
+        tag.known_classes()
 
         if parent_tag and tag.need_merge:
             new_tag = parent_tag

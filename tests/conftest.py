@@ -140,9 +140,6 @@ class Factory:
     def run(self):
         if self.func:
             self.scope_func()
-            if not self.is_model:
-                self.obj.driver.close()
-                self.obj.driver.quit()
         else:
             self.scope_obj()
 
