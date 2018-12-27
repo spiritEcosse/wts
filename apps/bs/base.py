@@ -3,6 +3,8 @@ import uuid
 from types import FunctionType
 
 from bs4 import BeautifulSoup
+from bs4.element import (HTMLAwareEntitySubstitution, NavigableString,
+                         PageElement)
 from bs4.element import Tag as BaseTag
 
 from apps.html.models import Classes
@@ -29,10 +31,62 @@ class Bs(BeautifulSoup):
         super().__init__(self.html, features, **kwargs)
 
 
-class Tag(BaseTag):
-    def __init__(self, *args, prop={}, we_known_classes=set(), **kwargs):
-        super().__init__(*args, **kwargs)
-        self.driver = getattr(self.parser, 'driver', None)
+class Tag(PageElement):
+    def __init__(self, parser=None, builder=None, name=None, namespace=None,
+                 prefix=None, attrs=None, parent=None, previous=None,
+                 is_xml=None, prop={}, we_known_classes=set()):
+        "Basic constructor."
+
+        if parser is None:
+            self.parser_class = None
+        else:
+            # We don't actually store the parser object: that lets extracted
+            # chunks be garbage-collected.
+            self.parser_class = parser.__class__
+        if name is None:
+            raise ValueError("No value provided for new tag's name.")
+        self.name = name
+        self.namespace = namespace
+        self.prefix = prefix
+        if builder is not None:
+            preserve_whitespace_tags = builder.preserve_whitespace_tags
+        else:
+            if is_xml:
+                preserve_whitespace_tags = []
+            else:
+                preserve_whitespace_tags = HTMLAwareEntitySubstitution.preserve_whitespace_tags
+        self.preserve_whitespace_tags = preserve_whitespace_tags
+        if attrs is None:
+            attrs = {}
+        elif attrs:
+            if builder is not None and builder.cdata_list_attributes:
+                attrs = builder._replace_cdata_list_attribute_values(
+                    self.name, attrs)
+            else:
+                attrs = dict(attrs)
+        else:
+            attrs = dict(attrs)
+
+        # If possible, determine ahead of time whether this tag is an
+        # XML tag.
+        if builder:
+            self.known_xml = builder.is_xml
+        else:
+            self.known_xml = is_xml
+        self.attrs = attrs
+        self.contents = []
+        self.setup(parent, previous)
+        self.hidden = False
+
+        # Set up any substitutions, such as the charset in a META tag.
+        if builder is not None:
+            builder.set_up_substitutions(self)
+            self.can_be_empty_element = builder.can_be_empty_element(
+                name)
+        else:
+            self.can_be_empty_element = False
+
+        self.driver = getattr(parser, 'driver', None)
         [setattr(self, key, val) for key, val in prop.items()]
         self.we_known_classes = we_known_classes
 
@@ -136,11 +190,20 @@ class Tag(BaseTag):
         if self.bgc != 'rgba(0, 0, 0, 0)':
             self.attrs['class'].append('bg-primary')
 
+    def add_text_color(self):
+        self.attrs['class'].append('text-white')
+
     def add_border(self):
         if self.has_class():
             if Classes.have_pr(self.attrs['class'], 'border') is not None:
                 if not int(self.border()[0]):
                     self.attrs['class'].append('border-none')
+
+    def display(self):
+        return self._value_of_css_property('display')
+
+    def display_block(self):
+        return self.display() == 'block'
 
     def need_merge(self):
         """Checks whether you need to add the child to the parent.
@@ -155,7 +218,7 @@ class Tag(BaseTag):
             False.
 
         """
-        check = [self.width == self.parent.width]
+        check = [self.width == self.parent.width, not self.is_icon()]
 
         if self.has_class():
             filter_spec = [
@@ -163,7 +226,7 @@ class Tag(BaseTag):
                     'and': [
                         {'field': 'name', 'op': 'in',
                             'value': self.attrs['class']},
-                        {'field': 'belong_to_component',
+                        {'field': 'block',
                             'op': '==', 'value': True},
                     ]
                 }
@@ -213,8 +276,38 @@ class Tag(BaseTag):
             ]
             res = Classes.pd_name(filter_spec)
 
-        return res
+        self.attrs['class'] = res
 
+    def add_center(self):
+        self.attrs['class'].extend(
+            ['align-self-center']
+        )
+
+    def is_icon(self):
+        return self.name == 'i'
+
+    def add_icon(self):
+        self.attrs['class'].extend(['icon', 'ion-ios-people'])
+
+    def need_center(self):
+        if len(self.contents) == 1:
+            child = self.contents[0]
+
+            if type(child) is not NavigableString:
+                if len(self.contents[0].contents) == 1:
+                    child = self.contents[0].contents[0]
+
+                    if type(child) is not NavigableString:
+                        return not child.display_block()
+
+        return False
+
+
+for prop_name in dir(Tag):  # noqa
+    prop = getattr(Tag, prop_name)
+
+    if isinstance(prop, property) or type(prop) is FunctionType:
+        setattr(BaseTag, prop_name, prop)
 
 # styles = driver.execute_script(
 #     'var items = {};'

@@ -14,7 +14,7 @@ def test_all(factory):
 
 @pytest.mark.db
 def test_functional(factory):
-    pass
+    test_all(factory)
 
 # @pytest.mark.db
 # def test_all(case):

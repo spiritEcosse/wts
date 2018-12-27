@@ -4,6 +4,9 @@ deploy:
 deploy_detach:
 	docker-compose up -d
 
+start_web:
+	docker-compose start web
+
 deploy_build:
 	docker-compose up --build
 
@@ -24,6 +27,11 @@ cov:
 
 test_all:
 	docker-compose exec web ./test.sh
+	# PYTHONPATH=. py.test
+	# verbose - -vv
+
+test_functional:
+	docker-compose exec web ./test_functional.sh
 	# PYTHONPATH=. py.test
 	# verbose - -vv
 

@@ -20,7 +20,7 @@ class Builder():
 
         """
         self.bs = Bs()
-        self.bs_input = Bs(bs_input)
+        self.bs_input = Bs(html=bs_input)
 
     def prettify(self):
         """
@@ -51,6 +51,7 @@ class Builder():
         type: None
 
         """
+        self.bs_input.div.add_text_color()
         self.bs_input.div.add_bg()
         self.bs_input.div.add_border()
         self.bs = self.tree(self.bs_input.div)
@@ -76,7 +77,12 @@ class Builder():
         """
         tag.known_classes()
 
-        if parent_tag and tag.need_merge:
+        tag.add_center() if tag.need_center() else None
+        tag.add_icon() if tag.is_icon() else None
+
+        tag.attrs.pop('style') if 'style' in tag.attrs else None
+
+        if parent_tag and tag.need_merge():
             new_tag = parent_tag
             new_tag.attrs['class'].extend(tag.attrs['class'])
         else:
@@ -93,13 +99,3 @@ class Builder():
                         new_tag.append(tag_child)
 
         return new_tag
-
-    def add_class(self, soup):
-        # css = self.get_css_styles()
-        analyze = Analyze()
-
-        if analyze.horizontal_center():
-            soup.attrs['class'].append(self.horizontal_center())
-
-        if analyze.vertical_center():
-            soup.attrs['class'].append(self.add_align_self_center())

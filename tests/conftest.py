@@ -9,6 +9,8 @@ import os
 import pytest
 from app import app as core_app
 from app import db
+from apps.css.models import Property
+from apps.html.models import Classes
 from apps.test.models import Case
 from wts.config import TestingConfig
 
@@ -45,16 +47,19 @@ def initial_data(app):
     # Value(name='block', property=pr, inline=False).save()
     # Value(name='inline', property=pr, block=False).save()
     # Value(name='inline-block', property=pr).save()
-    # [
-    #     Classes(name=name).save()
-    #     for name in ['card', "card-body", "card-title", "card-text",
-    #                  "bg-primary", "border-none", "row", "text-center",
-    #                  "text-white", "col-5", "col-7",
-    #                  "align-self-center"]
-    # ]
-    #
-    # border = Property(name='border').save()
-    # Classes(name='card', properties=[border]).save()
+    [
+        Classes(name=name, block=block).save()
+        for name, block in [
+            ('card', True), ("card-body", True),
+            ("card-title", True), ("card-text", True),
+            ("bg-primary", False), ("border-none", False), ("row", True),
+            ("text-center", False), ("text-white", False), ("col-5", True),
+            ("col-7", True), ("align-self-center", False)
+        ]
+    ]
+
+    border = Property(name='border').save()
+    Classes(name='card', properties=[border]).save()
 
 
 class Factory:

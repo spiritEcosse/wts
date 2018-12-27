@@ -31,6 +31,9 @@ class Classes(ModelMixin, db.Model):
     belong_to_component = db.Column(
         db.Boolean, server_default=expression.true(), nullable=False
     )
+    block = db.Column(
+        db.Boolean, server_default=expression.true(), nullable=False
+    )
     properties = relationship(
         'Property', secondary=classes_properties,
         backref=db.backref('classes', lazy=True)
