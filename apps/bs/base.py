@@ -34,7 +34,7 @@ class Bs(BeautifulSoup):
 class Tag(PageElement):
     def __init__(self, parser=None, builder=None, name=None, namespace=None,
                  prefix=None, attrs=None, parent=None, previous=None,
-                 is_xml=None, prop={}, we_known_classes=set()):
+                 is_xml=None, prop={}):
         "Basic constructor."
 
         if parser is None:
@@ -88,7 +88,6 @@ class Tag(PageElement):
 
         self.driver = getattr(parser, 'driver', None)
         [setattr(self, key, val) for key, val in prop.items()]
-        self.we_known_classes = we_known_classes
 
     def _value_of_css_property(self, property):
         """Return css property value via selenium.
@@ -187,8 +186,10 @@ class Tag(PageElement):
         return match.group(1, 2, 3)
 
     def add_bg(self):
-        if self.bgc != 'rgba(0, 0, 0, 0)':
+        if self.bgc == 'rgba(51, 102, 204, 1)':
             self.attrs['class'].append('bg-primary')
+        elif self.bgc == 'rgba(32, 41, 64, 1)':
+            self.attrs['class'].append('bg-dark')
 
     def add_text_color(self):
         self.attrs['class'].append('text-white')
@@ -234,8 +235,12 @@ class Tag(PageElement):
             check.append(
                 apply_filters(Classes.query, filter_spec).scalar() is None
             )
-
+        check.append(self.name not in ['h5', 'h3', 'i', 'b'])
+        check.extend([not self.parent.d_flex(), len(self.contents) == 1])
         return all(check)
+
+    def d_flex(self):
+        return 'd-flex' in self.attrs['class'] if self.has_class() else False
 
     def has_class(self):
         """Check only class.
@@ -264,19 +269,10 @@ class Tag(PageElement):
             List of str.
 
         """
-        res = []
-
-        if self.we_known_classes:
-            res = list(
-                set(self.attrs['class']).intersection(self.we_known_classes)
-            )
-        else:
-            filter_spec = [
+        if self.has_class():
+            self.attrs['class'] = Classes.pd_name([
                 {'field': 'name', 'op': 'in', 'value': self.attrs['class']},
-            ]
-            res = Classes.pd_name(filter_spec)
-
-        self.attrs['class'] = res
+            ])
 
     def add_center(self):
         self.attrs['class'].extend(
@@ -287,7 +283,8 @@ class Tag(PageElement):
         return self.name == 'i'
 
     def add_icon(self):
-        self.attrs['class'].extend(['icon', 'ion-ios-people'])
+        self.attrs['class'].append('material-icons')
+        self.string = 'people'
 
     def need_center(self):
         if len(self.contents) == 1:

@@ -52,9 +52,14 @@ def initial_data(app):
         for name, block in [
             ('card', True), ("card-body", True),
             ("card-title", True), ("card-text", True),
-            ("bg-primary", False), ("border-none", False), ("row", True),
+            ("bg-primary", False), ("bg-dark", False),
+            ("d-flex", True), ("justify-content-between", False),
+            ("border-none", False), ("row", True), ("d-block", True),
             ("text-center", False), ("text-white", False), ("col-5", True),
-            ("col-7", True), ("align-self-center", False)
+            ("col-7", True), ("align-self-center", False),
+            ("text-muted", False),
+            ("text-success", False),
+            ("font-weight-bold", False),
         ]
     ]
 

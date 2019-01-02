@@ -82,9 +82,14 @@ class Builder():
 
         tag.attrs.pop('style') if 'style' in tag.attrs else None
 
+        if tag.display_block() and not bool(tag.attrs.get('class', False)):
+            tag.attrs['class'] = ['d-block']
+
         if parent_tag and tag.need_merge():
             new_tag = parent_tag
-            new_tag.attrs['class'].extend(tag.attrs['class'])
+
+            if new_tag.has_class() and tag.has_class():
+                new_tag.attrs['class'].extend(tag.attrs['class'])
         else:
             new_tag = self.bs.new_tag(tag.name, **tag.attrs)
 
@@ -92,6 +97,14 @@ class Builder():
             if child != '\n':
                 if type(child) is NavigableString:
                     new_tag.append(child)
+
+                    if tag.display_block() and new_tag is parent_tag:
+                        new_tag.string = 'People'
+                        new_tag.string.wrap(
+                            self.bs.new_tag(
+                                'p', **{'class': ["card-text"]}
+                            )
+                        )
                 else:
                     tag_child = self.tree(child, new_tag)
 
